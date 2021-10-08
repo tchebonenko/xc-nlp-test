@@ -1,0 +1,44 @@
+Installed:
+https://github.com/MartinoMensio/spacy-universal-sentence-encoder
+
+
+https://tfhub.dev/google/universal-sentence-encoder/embeddings 
+
+https://colab.research.google.com/github/tensorflow/hub/blob/master/examples/colab/semantic_similarity_with_tf_hub_universal_encoder.ipynb#scrollTo=BnvjATdy64eR
+
+
+>>> import tensorflow_hub as hub
+>>> embed = hub.load("https://tfhub.dev/google/universal-sentence-encoder/4")
+2021-10-07 23:08:16.308543: I tensorflow/core/platform/cpu_feature_guard.cc:142] This TensorFlow binary is optimized with oneAPI Deep Neural Network Library (oneDNN) to use the following CPU instructions in performance-critical operations:  AVX2 FMA
+To enable them in other operations, rebuild TensorFlow with the appropriate compiler flags.
+2021-10-07 23:08:18.864039: I tensorflow/compiler/mlir/mlir_graph_optimization_pass.cc:185] None of the MLIR Optimization Passes are enabled (registered 2)
+>>> embeddings = embed([
+...     "The quick brown fox jumps over the lazy dog.",
+...     "I am a sentence for which I would like to get its embedding",
+...     "This is a sentence for which I would like to get its embedding"])
+>>> print(embeddings)
+tf.Tensor(
+[[-0.03133018 -0.06338634 -0.01607502 ... -0.03242778 -0.04575741
+   0.05370456]
+ [ 0.0508086  -0.01652428  0.01573781 ...  0.00976659  0.03170123
+   0.01788119]], shape=(2, 512), dtype=float32)
+>>> import numpy as np
+>>> np.inner(embeddings, embeddings)
+array([[1.0000001 , 0.01492006],
+       [0.01492006, 1.0000002 ]], dtype=float32)
+
+For files:
+>>> with open("docsample1_117hr1ih.txt", "r") as f:
+...     embeddings1 = embed(f.readlines())
+... 
+>>> with open("docsample2_117hr1eh.txt", "r") as f:
+...     embeddings2 = embed(f.readlines())
+
+>>> import numpy as np
+>>> t = np.inner(embeddings1,embeddings2)
+>>> t
+array([[ 2.23109454e-01,  1.39831692e-01,  1.61738217e-01, ...,
+        -4.86654267e-02, -2.00954545e-02, -2.32210048e-02],
+       [ 1.53501749e-01,  4.01088856e-02,  4.70234193e-02, ...,
+
+(takes about 10 seconds to calculate the inner product)
