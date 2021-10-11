@@ -5,6 +5,7 @@ from os.path import isfile, join
 from types import new_class
 from typing import List
 from lxml import etree 
+from contextlib import ExitStack
 import sklearn.feature_extraction.text
 from nltk.tokenize import PunktSentenceTokenizer, RegexpTokenizer, TreebankWordTokenizer
 from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer
@@ -122,12 +123,30 @@ def transform_text(text: str, vocab: dict, ngram_size: int = 4):
     """
     return CountVectorizer(vocabulary=vocab).fit_transform([text])
 
+def train_count_vectorizer(train_data: List[str], ngram_size: int = 4):
+    """
+    Trains a count vectorizer on the training data
+    """
+    vectorizer = CountVectorizer(ngram_range=(ngram_size,ngram_size), preprocessor=xml_to_text, tokenizer=RegexpTokenizer(r"\w+").tokenize, lowercase=True)
+    with ExitStack() as stack:
+        files = [
+            stack.enter_context(open(filename))
+            for filename in train_data 
+        ]
+        X = vectorizer.fit_transform(files)
+    return vectorizer, X 
+
 def train_hashing_vectorizer(train_data: List[str], ngram_size: int = 4):
     """
     Trains a hashing vectorizer on the training data
     """
-    vectorizer = HashingVectorizer(ngram_range=(ngram_size,ngram_size))
-    X = vectorizer.fit_transform(train_data)
+    vectorizer = HashingVectorizer(ngram_range=(ngram_size,ngram_size), preprocessor=xml_to_text, tokenizer=RegexpTokenizer(r"\w+").tokenize, lowercase=True)
+    with ExitStack() as stack:
+        files = [
+            stack.enter_context(open(filename))
+            for filename in train_data 
+        ]
+        X = vectorizer.fit_transform(files)
     return vectorizer, X
 
 def test_hashing_vectorizer(vectorizer: HashingVectorizer, test_data: List[str]):
@@ -136,3 +155,6 @@ def test_hashing_vectorizer(vectorizer: HashingVectorizer, test_data: List[str])
 # TODO: Add a function to parse the bill (text) into paragraphs 
 
 # TODO: calculate ngrams from the bill text
+
+# TODO: create a streaming hash vectorizer. See 
+# https://scikit-learn.org/stable/auto_examples/applications/plot_out_of_core_classification.html#sphx-glr-auto-examples-applications-plot-out-of-core-classification-py
