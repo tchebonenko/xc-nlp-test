@@ -154,7 +154,5 @@ def test_hashing_vectorizer(vectorizer: HashingVectorizer, test_data: List[str])
 
 # TODO: Add a function to parse the bill (text) into paragraphs 
 
-# TODO: calculate ngrams from the bill text
-
 # TODO: create a streaming hash vectorizer. See 
 # https://scikit-learn.org/stable/auto_examples/applications/plot_out_of_core_classification.html#sphx-glr-auto-examples-applications-plot-out-of-core-classification-py
