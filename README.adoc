@@ -1,6 +1,48 @@
 :toc:
 
-## Experiments in paragraph vectorization
+# Similarity metrics for bill files
+
+## Objectives
+
+The objective of this repository is to develop and test approaches to measuring similarity between bill documents and fragments of bill documents (sections or paragraphs). The `samples` directory contains sample documents, mostly in XML format. The full corpus contains > 50,000 documents and can be provided, if necessary.
+
+For documents A and B, we want to develop an algorithm to:
+
+1. Match sections in document A to sections in the document B. Each section in document A will match one section in Document B or have no match.
+2. Measure pairwise similarity between sections, which can be reported as a percentage or a number between 0 and 1.
+3. Measure pairwise similarity between documents, which can be reported as a percentage or a number between 0 and 1.
+
+Sections:: a 'section' may be defined as the text in a 'section' element of the XML, or as paragraphs separated by line breaks in a plain text (`.txt`) document. The `parse_utils.xml_to_section` function parses a document into sections and extracts the text.
+
+* Desired output
+
+For each comparison A to B, we want a result that consists of pairs of matching sections; similarity score for each matching section pair; a whole document-to-document similarity score. Each section has a unique ID, so the result could look like:
+
+```javascript
+doc_score: .8,
+
+from: [{
+id: af82329rth3,
+id_match: 8373aten715n,
+score: .3
+  }....],
+  
+to: [{
+id: 8373aten715n,
+id_match: af82329rth3,
+score: .3 // it is possible that B->A score would be different from A->B score
+   }]
+```
+
+* Fast pairwise similarity
+
+The similarity algorithm should be *fast* in calculating similarity between documents. Ideally, the methodology may require some pre-processing of individual documents (e.g. calculating vector representation for document A), and then quickly calculate pairwise similarity between document A and the ~ 50,000 documents in the corpus.
+
+* Accurate section or paragraph matching and similarity percentage
+
+The matching accuracy between sections should be as accurate as possible, given the desire for fast pairwise performance.
+
+## Approaches
 
 ### Ngram vector
 
