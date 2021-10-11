@@ -1,3 +1,13 @@
+:toc:
+
+## Experiments in paragraph vectorization
+
+### Ngram vector
+
+In `parse_utils` we're using `sklearn` to extract ngrams, and nltk to tokenize text. The idea is to create an index of n-grams (initially 4-grams); then convert each paragraph to a vector of n-gram counts. Using this, we can compute the cosine similarity between two paragraphs.
+
+### Universal Sentence Encoder
+
 Installed:
 https://github.com/MartinoMensio/spacy-universal-sentence-encoder
 

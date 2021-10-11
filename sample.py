@@ -1,10 +1,12 @@
 # python
 
 from sklearn.feature_extraction.text import CountVectorizer
+PATH_BIG_BILL = 'samples/congress/116/uslm/BILLS-116s1790enr.xml'
+
 # list of text documents
 # create the transform
 vectorizer = CountVectorizer(ngram_range=(4, 4))
-with open("./docsample.txt", "r") as f:
+with open(PATH_BIG_BILL, "r") as f:
     vectorizer.fit(f)
     vector = vectorizer.transform(f)
 

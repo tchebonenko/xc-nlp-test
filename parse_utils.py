@@ -1,16 +1,27 @@
 # python
 
+from os import path, listdir
+from os.path import isfile, join
+from types import new_class
 from typing import List
 from lxml import etree 
 import sklearn.feature_extraction.text
 from nltk.tokenize import PunktSentenceTokenizer, RegexpTokenizer, TreebankWordTokenizer
-
+from sklearn.feature_extraction.text import CountVectorizer, HashingVectorizer
+from scipy.spatial.distance import cosine
 
 # Among the larger bills is samples/congress/116/BILLS-116s1790enr.xml (~ 10MB)
 
-PATH_BIG_BILL = 'samples/congress/116/uslm/BILLS-116s1790enr.xml'
+PATH_116_USLM = 'samples/congress/116/uslm'
+PATH_116_USLM_TRAIN = 'samples/congress/116/train'
+BILLS_SAMPLE = [f'BILLS-116hr{number}ih.xml' for number in range(100, 300)]
+BIG_BILLS = ['BILLS-116s1790enr.xml', 'BILLS-116hjres31enr.xml']
+BIG_BILLS_PATHS = [path.join(PATH_116_USLM, bill) for bill in (BIG_BILLS + BILLS_SAMPLE)]
 
- 
+SAMPLE_BILL_PATHS_TRAIN = [join(PATH_116_USLM_TRAIN, f) for f in listdir(PATH_116_USLM) if isfile(join(PATH_116_USLM_TRAIN, f))]
+SAMPLE_BILL_PATHS = [join(PATH_116_USLM, f) for f in listdir(PATH_116_USLM) if isfile(join(PATH_116_USLM, f))]
+
+
 def getEnum(section) -> str:
   enumpath = section.xpath('enum')  
   if len(enumpath) > 0:
@@ -23,7 +34,7 @@ def getHeader(section) -> str:
     return headerpath[0].text
   return ''
 
-def text_to_ngrams(txt: str , ngram_size: int = 4) -> list:
+def text_to_vect(txt: str , ngram_size: int = 4):
     """
     Gets ngrams from text
     """
@@ -35,11 +46,10 @@ def text_to_ngrams(txt: str , ngram_size: int = 4) -> list:
     vect = sklearn.feature_extraction.text.CountVectorizer(ngram_range=(ngram_size,ngram_size),
         tokenizer=RegexpTokenizer(r"\w+").tokenize, lowercase=True)
     vect.fit(sentences)
-    ngrams = vect.get_feature_names_out()
-    print('{1}-grams: {0}'.format(ngrams, ngram_size))
-    # TODO get unt of tokens
-    return ngrams
-
+    # ngrams = vect.get_feature_names_out()
+    # print('{1}-grams: {0}'.format(ngrams, ngram_size))
+    #print(vect.vocabulary_)
+    return vect # list of text documents
 
 def xml_to_sections(xml_path: str):
     """
@@ -75,17 +85,53 @@ def xml_to_text(xml_path: str) -> str:
     except:
         raise Exception('Could not parse bill')
     return etree.tostring(billTree, method="text", encoding="unicode")
-    """
-    Parses the xml file and returns text of the body 
-    """
-    try:
-        billTree = etree.parse(xml_path)
-    except:
-        raise Exception('Could not parse bill')
     bodies = billTree.xpath('//body')
     if len(sections) == 0:
         return '' 
     return etree.tostring(bodies[0], method="text", encoding="unicode"),
+
+def xml_to_vect(xml_paths: List[str], ngram_size: int = 4):
+    """
+    Parses the xml file and returns the text of the body element, if any
+    """
+    total_str = '\n'.join([xml_to_text(xml_path) for xml_path in xml_paths])
+    return text_to_vect(total_str, ngram_size=ngram_size)
+
+    # to get the vocab dict: vect.vocabulary_
+
+def combine_vocabs(vocabs: List[CountVectorizer]):
+    """
+    Combines one or more vocabs into one
+    """
+    vocab_keys = list(set([list(v.vocabulary_.keys()) for v in vocabs]))
+    vocab = {vocab_key: str(i) for i, vocab_key in enumerate(vocab_keys)}
+    return vocab
+
+def get_combined_vocabs(xml_paths: List[str] = SAMPLE_BILL_PATHS, ngram_size: int = 4):
+    """
+    Gets the combined vocabulary of all the xml files
+    """
+    return xml_to_vect(xml_paths, ngram_size=ngram_size)
+
+def getSampleText():
+    return xml_to_text(BIG_BILLS_PATHS[0])
+
+def transform_text(text: str, vocab: dict, ngram_size: int = 4):
+    """
+    Transforms text into a vector using the vocab
+    """
+    return CountVectorizer(vocabulary=vocab).fit_transform([text])
+
+def train_hashing_vectorizer(train_data: List[str], ngram_size: int = 4):
+    """
+    Trains a hashing vectorizer on the training data
+    """
+    vectorizer = HashingVectorizer(ngram_range=(ngram_size,ngram_size))
+    X = vectorizer.fit_transform(train_data)
+    return vectorizer, X
+
+def test_hashing_vectorizer(vectorizer: HashingVectorizer, test_data: List[str]):
+    return vectorizer.transform(test_data)
 
 # TODO: Add a function to parse the bill (text) into paragraphs 
 
