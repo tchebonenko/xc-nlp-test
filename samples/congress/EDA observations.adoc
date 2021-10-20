@@ -31,8 +31,23 @@ NOTE: It might be the case, that some unseen symbols (like “white space” or 
 Definition and description of the score can be found here: +
 https://en.wikipedia.org/wiki/Jaccard_index 
 
+*Example of two paragraphs with Jaccard similarity score = 0.9:*
 
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Jaccard09example.jpg[alt="",width=600,height=300]
 
+## 3. Paragraph length considerations
 
+Some paragraphs have a very high number of characters (sometimes more than 100 000)
 
- 
+The histogram of paragraph lengths (number of characters) for paragraphs that have fewer than 10 000 characters is the following:
+
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hist_2.jpg[alt="",width=400,height=300]
+
+Where some of the shorter paragraphs are often related to section titles:
+
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Short text examples.jpg[alt="",width=600,height=300]
+
+## 4. Very few paragraphs are hard to compare with others since their content includes a lot of references to other bills and amendments.
+
+Example:
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hard text Example.jpg[alt="",width=600,height=300]
