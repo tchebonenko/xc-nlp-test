@@ -1,0 +1,22 @@
+# Findings from Data Exploration.
+
+### 1. Some paragraphs might be missing due to the current extraction process:
+This might be the reason why In the data sample provided on GitHub (239 files):
+
+             36.82 % have only 1 paragraph.
+
+             19.67 % have only 2 paragraphs.
+
+ 
+
+If we exclude files with an extreme number of paragraphs (more than 200) the histogram of the number of paragraphs is the following:
+
+![alt text](https://github.com/tchebonenko/Docs/blob/main/midterm-data.jpg?raw=true)
+
+
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hist_1.jpg[alt="",width=200,height=200]
+
+
+
+
+ 
