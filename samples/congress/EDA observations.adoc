@@ -33,7 +33,7 @@ https://en.wikipedia.org/wiki/Jaccard_index
 
 *Example of two paragraphs with Jaccard similarity score = 0.9:*
 
-image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Jaccard09example.jpg[alt="",width=700,height=400]
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Jaccard09example.jpg[alt="",width=400,height=250]
 
 ## 3. Paragraph length considerations
 
@@ -45,10 +45,10 @@ image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hist_2.j
 
 Where some of the shorter paragraphs are often related to section titles:
 
-image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Short text examples.jpg[alt="",width=700,height=400]
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Short text examples.jpg[alt="",width=400,height=250]
 
 ## 4. Very few paragraphs are hard to compare with others since their content includes a lot of references to other bills and amendments.
 
 Example: 
 
-image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hard text Example.jpg[alt="",width=700,height=400]
+image:https://github.com/tchebonenko/xc-nlp-test/blob/main/local_images/Hard text Example.jpg[alt="",width=400,height=250]
